@@ -1,0 +1,127 @@
+.container {
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  padding: 20px;
+  animation: fadeInUp 1s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.glassCard {
+  background: rgba(20, 25, 40, 0.4);
+  backdrop-filter: blur(12px);
+  border-radius: 48px;
+  padding: 40px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  transition: transform 0.3s ease;
+}
+
+.glassCard:hover {
+  transform: scale(1.02);
+}
+
+.dayTitle {
+  font-size: 1rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #b3b9d0;
+  margin-bottom: 20px;
+}
+
+.mainText {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 40px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #C0C9FF 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.countdownBtn {
+  background: linear-gradient(135deg, #2a2f3f, #1a1f2f);
+  border: none;
+  border-radius: 80px;
+  padding: 16px 32px;
+  min-width: 200px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  backdrop-filter: blur(5px);
+}
+
+.countdownBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+  background: linear-gradient(135deg, #3a3f55, #252a3a);
+}
+
+.countdownNumber {
+  font-size: 3rem;
+  font-weight: 800;
+  font-family: monospace;
+  letter-spacing: 4px;
+  background: linear-gradient(135deg, #fff, #bfc9ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  transition: transform 0.2s ease;
+}
+
+.countdownLabel {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #8e94b0;
+  margin-top: 8px;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.9; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.pulse {
+  animation: pulse 1s infinite;
+}
+
+.completionMessage {
+  margin-top: 24px;
+  font-size: 0.9rem;
+  color: #9aa3c2;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+@media (max-width: 480px) {
+  .glassCard {
+    padding: 30px 20px;
+  }
+  .mainText {
+    font-size: 1.4rem;
+  }
+  .countdownNumber {
+    font-size: 2.5rem;
+  }
+  .countdownBtn {
+    padding: 12px 24px;
+    min-width: 160px;
+  }
+}
