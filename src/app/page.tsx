@@ -3,12 +3,82 @@
 import { useEffect, useState, useRef } from 'react';
 import styles from './page.module.css';
 
+// Инициализация Telegram WebApp
+declare global {
+  interface Window {
+    Telegram: {
+      WebApp: {
+        ready: () => void;
+        expand: () => void;
+        close: () => void;
+        MainButton: {
+          show: () => void;
+          hide: () => void;
+          setText: (text: string) => void;
+          onClick: (fn: () => void) => void;
+          offClick: (fn: () => void) => void;
+        };
+        initDataUnsafe?: {
+          user?: {
+            first_name?: string;
+            last_name?: string;
+            username?: string;
+            id?: number;
+          };
+        };
+        colorScheme?: string;
+        themeParams?: {
+          bg_color?: string;
+          text_color?: string;
+          hint_color?: string;
+          link_color?: string;
+          button_color?: string;
+          button_text_color?: string;
+        };
+      };
+    };
+  }
+}
+
 export default function Home() {
+  const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
   const [countdownValue, setCountdownValue] = useState(9);
   const [isCounting, setIsCounting] = useState(true);
   const [showCompletion, setShowCompletion] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const [userName, setUserName] = useState<string>('');
+
+  // Инициализация Telegram и получение данных пользователя
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.expand(); // расширяем на весь экран
+      
+      // Получаем имя пользователя для персонализации (опционально)
+      if (tg.initDataUnsafe?.user?.first_name) {
+        setUserName(tg.initDataUnsafe.user.first_name);
+      }
+      
+      // Адаптация под тему Telegram (можно применить цвета к CSS переменным)
+      if (tg.themeParams) {
+        const root = document.documentElement;
+        root.style.setProperty('--tg-bg-color', tg.themeParams.bg_color || '#000000');
+        root.style.setProperty('--tg-text-color', tg.themeParams.text_color || '#ffffff');
+      }
+    }
+  }, []);
+
+  // Проверяем, видел ли пользователь онбординг
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem('protocol_onboarding_seen');
+    if (hasSeenOnboarding === 'true') {
+      setShowOnboarding(false);
+    } else {
+      setShowOnboarding(true);
+    }
+  }, []);
 
   const updateDisplay = () => {
     const numberEl = document.querySelector(`.${styles.countdownNumber}`);
@@ -28,11 +98,14 @@ export default function Home() {
     if (buttonRef.current) {
       buttonRef.current.classList.remove(styles.pulse);
     }
-    console.log('Отсчёт завершён! Переход к основному функционалу...');
-    // ⚡ Здесь потом добавишь переход на следующий экран
+    
+    // Сохраняем, что онбординг пройден
+    localStorage.setItem('protocol_onboarding_seen', 'true');
+    
+    // Переход на дашборд после короткой задержки
     setTimeout(() => {
-      alert('Протокол активирован! Добро пожаловать в твою новую жизнь.');
-    }, 500);
+      setShowOnboarding(false);
+    }, 1000);
   };
 
   const tick = () => {
@@ -72,7 +145,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // Создаём плавающие частицы на фоне
+    if (!showOnboarding) return;
     const createParticles = () => {
       const particlesContainer = document.createElement('div');
       particlesContainer.id = 'particles';
@@ -108,24 +181,45 @@ export default function Home() {
       const container = document.getElementById('particles');
       if (container) container.remove();
     };
-  }, []);
+  }, [showOnboarding]);
 
+  if (showOnboarding === null) {
+    return null; // можно добавить красивый лоадер, но для простоты оставим
+  }
+
+  // Дашборд (временная заглушка, позже заменишь на полноценный)
+  if (!showOnboarding) {
+    return (
+      <div className={styles.dashboard}>
+        <div className={styles.dashboardCard}>
+          <h1 className={styles.dashboardTitle}>📊 Твой день</h1>
+          <p className={styles.dashboardGreeting}>
+            {userName ? `С возвращением, ${userName}!` : 'С возвращением!'}
+          </p>
+          <p className={styles.dashboardText}>День №1 в Протоколе</p>
+          <button
+            className={styles.resetButton}
+            onClick={() => {
+              localStorage.removeItem('protocol_onboarding_seen');
+              window.location.reload();
+            }}
+          >
+            Сбросить онбординг (тест)
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Онбординг с обратным отсчётом
   return (
-    <div style={{ 
-      background: 'radial-gradient(circle at 20% 30%, #0a0f1e, #03060c)',
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'relative',
-      overflow: 'hidden',
-      fontFamily: "'Inter', sans-serif"
-    }}>
+    <div className={styles.onboardingContainer}>
       <div className={styles.container}>
         <div className={styles.glassCard}>
-          <div className={styles.dayTitle}>✨ ТВОЙ ДЕНЬ X ✨</div>
+          <div className={styles.dayTitle}>✨ ПРОТОКОЛ ЖИЗНИ ✨</div>
           <div className={styles.mainText}>
-            Твой протокол жизни —<br />это получить лучшую версию себя
+            {userName ? `${userName}, твой путь` : 'Твой путь'}<br />
+            к лучшей версии себя
           </div>
           <button 
             ref={buttonRef}
@@ -133,7 +227,7 @@ export default function Home() {
             onClick={resetAndStart}
           >
             <div className={styles.countdownNumber}>{countdownValue}</div>
-            <div className={styles.countdownLabel}>СТАРТ ЧЕРЕЗ</div>
+            <div className={styles.countdownLabel}>СТАРТ</div>
           </button>
           <div 
             className={styles.completionMessage}
