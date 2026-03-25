@@ -1,63 +1,35 @@
-'use client';
-
-import { Section, Cell, Image, List } from '@telegram-apps/telegram-ui';
-import { useTranslations } from 'next-intl';
-
-import { Link } from '@/components/Link/Link';
-import { LocaleSwitcher } from '@/components/LocaleSwitcher/LocaleSwitcher';
-import { Page } from '@/components/Page';
-
-import tonSvg from './_assets/ton.svg';
-
 export default function Home() {
-  const t = useTranslations('i18n');
-
   return (
-    <Page back={false}>
-      <List>
-        <Section
-          header="Features"
-          footer="You can use these pages to learn more about features, provided by Telegram Mini Apps and other useful projects"
-        >
-          <Link href="/ton-connect">
-            <Cell
-              before={
-                <Image
-                  src={tonSvg.src}
-                  style={{ backgroundColor: '#007AFF' }}
-                  alt="TON Logo"
-                />
-              }
-              subtitle="Connect your TON wallet"
-            >
-              TON Connect
-            </Cell>
-          </Link>
-        </Section>
-        <Section
-          header="Application Launch Data"
-          footer="These pages help developer to learn more about current launch information"
-        >
-          <Link href="/init-data">
-            <Cell subtitle="User data, chat information, technical data">
-              Init Data
-            </Cell>
-          </Link>
-          <Link href="/launch-params">
-            <Cell subtitle="Platform identifier, Mini Apps version, etc.">
-              Launch Parameters
-            </Cell>
-          </Link>
-          <Link href="/theme-params">
-            <Cell subtitle="Telegram application palette information">
-              Theme Parameters
-            </Cell>
-          </Link>
-        </Section>
-        <Section header={t('header')} footer={t('footer')}>
-          <LocaleSwitcher />
-        </Section>
-      </List>
-    </Page>
+    <div style={{ 
+      padding: '20px', 
+      textAlign: 'center', 
+      fontFamily: 'system-ui',
+      backgroundColor: '#0f0f0f',
+      color: 'white',
+      minHeight: '100vh'
+    }}>
+      <h1 style={{ fontSize: '32px' }}>🚀 Протокол Жизни</h1>
+      <p style={{ fontSize: '20px', marginTop: '10px' }}>
+        Твой личный AI-тренер по привычкам
+      </p>
+      
+      <div style={{ marginTop: '50px' }}>
+        <h2>Доброе утро!</h2>
+        <p>Сегодня день №1 в твоём Протоколе</p>
+      </div>
+
+      <button style={{
+        marginTop: '40px',
+        padding: '16px 32px',
+        fontSize: '18px',
+        backgroundColor: '#00aaff',
+        color: 'white',
+        border: 'none',
+        borderRadius: '9999px',
+        cursor: 'pointer'
+      }}>
+        ✅ Начать день
+      </button>
+    </div>
   );
 }
