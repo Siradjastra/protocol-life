@@ -1,0 +1,13 @@
+@layer components {
+  .habit-card {
+    @apply transition-all duration-300 cursor-pointer;
+  }
+
+  .habit-card.selected {
+    @apply shadow-lg scale-105;
+  }
+
+  .habit-card:hover {
+    @apply shadow-lg;
+  }
+}
